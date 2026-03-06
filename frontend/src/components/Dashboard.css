@@ -1,0 +1,603 @@
+/* Dashboard.css - Обновленная версия с графиком */
+.dashboard {
+    padding: var(--spacing-xl);
+    background: var(--bg-primary);
+    border-radius: var(--radius-lg);
+    animation: fadeIn 0.5s ease;
+}
+
+.dashboard-header {
+    background: var(--bg-secondary);
+    padding: var(--spacing-xl);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--spacing-xl);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 10px var(--shadow-color);
+}
+
+.dashboard-header h2 {
+    color: var(--text-primary);
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.dashboard-header h2::before {
+    content: '';
+    display: inline-block;
+    width: 4px;
+    height: 24px;
+    background: var(--gradient-primary);
+    margin-right: 12px;
+    border-radius: 2px;
+    vertical-align: middle;
+}
+
+.period-selector {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    background: var(--bg-secondary);
+    padding: 10px 16px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+}
+
+.period-selector span {
+    color: var(--text-muted);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.period-selector select {
+    padding: 8px 12px;
+    background: var(--bg-tertiary);
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    min-width: 120px;
+    transition: all 0.3s ease;
+}
+
+.period-selector select:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Статистика в один ряд */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-xl);
+}
+
+.stat-card {
+    background: var(--bg-secondary);
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-width: 0; /* Предотвращает переполнение */
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent-primary);
+    box-shadow: 0 10px 30px var(--shadow-hover);
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--gradient-primary);
+}
+
+.stat-card:nth-child(1)::before {
+    background: var(--gradient-primary);
+}
+
+.stat-card:nth-child(2)::before {
+    background: var(--gradient-success);
+}
+
+.stat-card:nth-child(3)::before {
+    background: linear-gradient(135deg, #8b5cf6, #ec4899);
+}
+
+.stat-card:nth-child(4)::before {
+    background: var(--gradient-warning);
+}
+
+.stat-card:nth-child(5)::before {
+    background: linear-gradient(135deg, #ef4444, #f97316);
+}
+
+.stat-card:nth-child(6)::before {
+    background: linear-gradient(135deg, #06b6d4, #3b82f6);
+}
+
+.stat-card:nth-child(7)::before {
+    background: linear-gradient(135deg, #84cc16, #10b981);
+}
+
+.stat-value {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.stat-label {
+    color: var(--text-muted);
+    font-size: 13px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Секция с графиком */
+.chart-section {
+    background: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    margin-bottom: var(--spacing-xl);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 20px var(--shadow-color);
+}
+
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-lg);
+    flex-wrap: wrap;
+    gap: var(--spacing-md);
+}
+
+.chart-header h3 {
+    color: var(--text-primary);
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.chart-header h3::before {
+    content: '';
+    display: inline-block;
+    width: 4px;
+    height: 18px;
+    background: var(--gradient-primary);
+    margin-right: 10px;
+    border-radius: 2px;
+    vertical-align: middle;
+}
+
+.chart-legend {
+    display: flex;
+    gap: var(--spacing-lg);
+    flex-wrap: wrap;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.legend-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+}
+
+.legend-color.leads {
+    background: var(--accent-primary);
+}
+
+.legend-color.sessions {
+    background: var(--accent-success);
+}
+
+/* Контейнер для графика */
+.chart-container {
+    width: 100%;
+    height: 350px;
+    margin-top: var(--spacing-md);
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md);
+    border: 1px solid var(--border-color);
+}
+
+/* Кастомные стили для Recharts */
+.recharts-cartesian-grid-horizontal line,
+.recharts-cartesian-grid-vertical line {
+    stroke: var(--border-color);
+    stroke-opacity: 0.3;
+}
+
+.recharts-cartesian-axis-line {
+    stroke: var(--border-color);
+}
+
+.recharts-cartesian-axis-tick-line {
+    stroke: var(--border-color);
+}
+
+.recharts-cartesian-axis-tick-value {
+    fill: var(--text-muted);
+    font-size: 12px;
+}
+
+.recharts-tooltip-wrapper {
+    filter: drop-shadow(0 4px 12px var(--shadow-color));
+}
+
+.recharts-default-tooltip {
+    background-color: var(--bg-secondary) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: var(--radius-md) !important;
+    padding: var(--spacing-md) !important;
+}
+
+.recharts-tooltip-label {
+    color: var(--text-primary) !important;
+    font-weight: 600 !important;
+    margin-bottom: var(--spacing-sm) !important;
+}
+
+.recharts-tooltip-item {
+    color: var(--text-secondary) !important;
+    font-size: 13px !important;
+    padding: 2px 0 !important;
+}
+
+.recharts-tooltip-item-name {
+    color: var(--text-muted) !important;
+}
+
+.recharts-tooltip-item-value {
+    color: var(--text-primary) !important;
+    font-weight: 600 !important;
+}
+
+.recharts-legend-wrapper {
+    color: var(--text-secondary) !important;
+}
+
+.recharts-legend-item-text {
+    color: var(--text-secondary) !important;
+    font-size: 13px !important;
+}
+
+/* Секция с последними диалогами */
+.recent-sessions-section {
+    background: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 20px var(--shadow-color);
+}
+
+.recent-sessions-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-lg);
+    flex-wrap: wrap;
+    gap: var(--spacing-md);
+}
+
+.recent-sessions-header h3 {
+    color: var(--text-primary);
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.recent-sessions-header h3::before {
+    content: '';
+    display: inline-block;
+    width: 4px;
+    height: 18px;
+    background: var(--gradient-primary);
+    margin-right: 10px;
+    border-radius: 2px;
+    vertical-align: middle;
+}
+
+.view-all-link {
+    color: var(--accent-primary);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    transition: all 0.3s ease;
+}
+
+.view-all-link:hover {
+    color: var(--accent-secondary);
+    transform: translateX(5px);
+}
+
+.recent-sessions-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.recent-session-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-md);
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+    flex-wrap: wrap;
+    gap: var(--spacing-md);
+}
+
+.recent-session-item:hover {
+    border-color: var(--accent-primary);
+    transform: translateX(5px);
+}
+
+.session-info {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-lg);
+    flex-wrap: wrap;
+}
+
+.session-name {
+    font-weight: 600;
+    color: var(--text-primary);
+    min-width: 120px;
+}
+
+.session-contact {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    color: var(--text-secondary);
+    font-size: 13px;
+}
+
+.session-contact i {
+    color: var(--accent-primary);
+    font-size: 14px;
+}
+
+.session-time {
+    color: var(--text-muted);
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.session-preview {
+    color: var(--text-muted);
+    font-size: 13px;
+    max-width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.dashboard-actions {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-md);
+    padding-top: var(--spacing-lg);
+    border-top: 1px solid var(--border-color);
+    margin-top: var(--spacing-xl);
+    flex-wrap: wrap;
+}
+
+.refresh-btn {
+    background: var(--gradient-success);
+    color: white;
+    border: none;
+    padding: 14px 32px;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+}
+
+.refresh-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+}
+
+.refresh-btn:active {
+    transform: translateY(0);
+}
+
+.dashboard-loading {
+    text-align: center;
+    padding: 80px 20px;
+    color: var(--text-muted);
+    font-size: 16px;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-color);
+}
+
+.dashboard-loading::after {
+    content: '';
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(59, 130, 246, 0.1);
+    border-top: 3px solid var(--accent-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-left: 12px;
+    vertical-align: middle;
+}
+
+.dashboard-error {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--accent-danger);
+    background: rgba(239, 68, 68, 0.1);
+    border-radius: var(--radius-lg);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    font-size: 16px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Адаптивность */
+@media (max-width: 1400px) {
+    .stats-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (max-width: 1200px) {
+    .stats-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 992px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .chart-container {
+        height: 300px;
+    }
+}
+
+@media (max-width: 768px) {
+    .dashboard-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .period-selector {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-md);
+    }
+
+    .stat-card {
+        padding: var(--spacing-md);
+    }
+
+    .stat-value {
+        font-size: 28px;
+    }
+
+    .chart-container {
+        height: 280px;
+        padding: var(--spacing-sm);
+    }
+
+    .recent-session-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .session-info {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .session-preview {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .dashboard {
+        padding: var(--spacing-md);
+    }
+
+    .dashboard-header h2 {
+        font-size: 20px;
+    }
+
+    .stat-value {
+        font-size: 24px;
+    }
+
+    .chart-container {
+        height: 250px;
+    }
+
+    .chart-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .chart-legend {
+        width: 100%;
+        justify-content: flex-start;
+    }
+}
+/* Добавьте в конец файла src/components/Dashboard.css */
+
+/* Светлая тема для Dashboard */
+.light-theme .stat-card {
+  background: var(--bg-secondary);
+  border-color: var(--border-color);
+}
+
+.light-theme .stat-value {
+  color: var(--text-primary);
+}
+
+.light-theme .stat-label {
+  color: var(--text-muted);
+}
+
+.light-theme .chart-section {
+  background: var(--bg-secondary);
+  border-color: var(--border-color);
+}
+
+.light-theme .recent-sessions-section {
+  background: var(--bg-secondary);
+  border-color: var(--border-color);
+}
