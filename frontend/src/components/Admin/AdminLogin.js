@@ -18,7 +18,7 @@ function AdminLogin({ onLogin }) {
       console.log('Отправляем запрос с данными:', { email, password });
 
       const response = await axios.post(
-        'http://localhost:8000/api/v1/admin/login',
+        '/api/v1/admin/login',
         { email, password },
         {
           headers: { 'Content-Type': 'application/json' },

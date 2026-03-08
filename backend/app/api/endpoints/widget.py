@@ -35,22 +35,23 @@ logger = logging.getLogger(__name__)
 def _cors_headers(request: Request) -> dict:
     """
     Формирует CORS‑заголовки для ответов виджета.
-    В продакшене возвращаем конкретный Origin (если он есть),
-    в разработке оставляем '*'.
     """
     origin = request.headers.get("origin")
 
-    # В разработке проще использовать '*'
-    if settings.DEBUG or not origin:
+    # Для продакшена возвращаем конкретный Origin
+    if origin and origin in settings.WIDGET_ALLOWED_DOMAINS:
         return {
-            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Origin": origin,
+            "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
+            "Access-Control-Allow-Headers": "Content-Type",
             "Access-Control-Allow-Credentials": "true",
         }
 
-    # В production/staging явно возвращаем Origin клиента
+    # Если Origin нет или он не разрешён - не пропускаем
     return {
-        "Access-Control-Allow-Origin": origin,
-        "Access-Control-Allow-Credentials": "true",
+        "Access-Control-Allow-Origin": "null",
+        "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type",
     }
 
 

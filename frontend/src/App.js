@@ -39,7 +39,7 @@ function MainAppContent({ token, setToken }) {
   const loadUserData = async () => {
     setIsLoading(true);
     try {
-      const userResponse = await axios.get('http://localhost:8000/api/v1/auth/me', {
+      const userResponse = await axios.get('/api/v1/auth/me', {
         headers: { Authorization: `Bearer ${token}` },
       });
       setUser(userResponse.data);
@@ -63,7 +63,7 @@ function MainAppContent({ token, setToken }) {
 
   const loadCompanies = async () => {
     try {
-      const response = await axios.get('http://localhost:8000/api/v1/tenants/', {
+      const response = await axios.get('/api/v1/tenants/', {
         headers: { Authorization: `Bearer ${token}` },
       });
       setCompanies(response.data);
@@ -94,7 +94,7 @@ function MainAppContent({ token, setToken }) {
   const handleAddCompany = async (companyName, website) => {
     try {
       const response = await axios.post(
-        'http://localhost:8000/api/v1/tenants/',
+        '/api/v1/tenants/',
         {
           company_name: companyName,
           website_url: website || ''
@@ -105,7 +105,7 @@ function MainAppContent({ token, setToken }) {
       setCompanies(prevCompanies => [...prevCompanies, response.data]);
       setSelectedCompany(response.data);
       setIsModalOpen(false);
-      console.log('✅ Компания создана:', response.data);
+      console.log('Компания создана:', response.data);
     } catch (error) {
       console.error('Ошибка при создании компании:', error);
       throw error;
@@ -360,7 +360,7 @@ function App() {
       formData.append('password', password);
 
       const response = await axios.post(
-        'http://localhost:8000/api/v1/auth/login',
+        '/api/v1/auth/login',
         formData,
         { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
       );

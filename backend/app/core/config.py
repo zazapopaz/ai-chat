@@ -100,7 +100,7 @@ class Settings(BaseSettings):
 
     # Безопасность
     SECURITY_BCRYPT_ROUNDS: int = 12
-    ALLOWED_HOSTS: List[str] = ["localhost", "127.0.0.1"]
+    ALLOWED_HOSTS: List[str] = ["agelarlk.ru", "www.agelarlk.ru", "127.0.0.1", "localhost"]
     RATE_LIMIT_PER_MINUTE: int = 60
 
     # Yandex GPT - обязательные поля
@@ -157,7 +157,7 @@ class Settings(BaseSettings):
     WIDGET_MAX_MESSAGES_PER_SESSION: int = 50
 
     # Безопасность виджета - ограничиваем домены
-    WIDGET_ALLOWED_DOMAINS: List[str] = ["*"]  # По умолчанию все, но ТОЛЬКО для разработки
+    WIDGET_ALLOWED_DOMAINS=["agelarlk.ru", "www.agelarlk.ru", "dobruy-doctor.msk.ru"]
 
     @field_validator("WIDGET_ALLOWED_DOMAINS", mode="after")
     @classmethod

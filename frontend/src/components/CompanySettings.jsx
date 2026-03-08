@@ -39,7 +39,7 @@ function CompanySettings({ token, company, onUpdate }) {
 
     try {
       const response = await axios.put(
-        `http://localhost:8000/api/v1/tenants/${company.id}`,
+        `/api/v1/tenants/${company.id}`,
         formData,
         {
           headers: {

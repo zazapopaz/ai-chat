@@ -23,7 +23,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES = settings.ACCESS_TOKEN_EXPIRE_MINUTES
 limiter = Limiter(
     key_func=get_remote_address,
     default_limits=[f"{settings.RATE_LIMIT_PER_MINUTE}/minute"],
-    enabled=not settings.DEBUG  # Отключаем в режиме разработки
+    enabled=True  # В продакшене ВКЛЮЧАЕМ
 )
 
 # HTTP Bearer схема

@@ -34,7 +34,7 @@ function TenantDetails({ tenantId, onClose }) {
     try {
       const token = localStorage.getItem('admin_token');
       const response = await axios.get(
-        `http://localhost:8000/api/v1/admin/tenants/${tenantId}/details`,
+        `/api/v1/admin/tenants/${tenantId}/details`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setTenant(response.data.tenant);
@@ -51,7 +51,7 @@ function TenantDetails({ tenantId, onClose }) {
     try {
       const token = localStorage.getItem('admin_token');
       const response = await axios.get(
-        `http://localhost:8000/api/v1/admin/tenants/${tenantId}/all-sessions?skip=${(sessionsPage-1)*20}&limit=20`,
+        `/api/v1/admin/tenants/${tenantId}/all-sessions?skip=${(sessionsPage-1)*20}&limit=20`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setSessions(response.data.sessions);
@@ -65,7 +65,7 @@ function TenantDetails({ tenantId, onClose }) {
     try {
       const token = localStorage.getItem('admin_token');
       const response = await axios.get(
-        `http://localhost:8000/api/v1/admin/tenants/${tenantId}/leads?skip=${(leadsPage-1)*20}&limit=20`,
+        `/api/v1/admin/tenants/${tenantId}/leads?skip=${(leadsPage-1)*20}&limit=20`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setLeads(response.data.leads);
@@ -79,7 +79,7 @@ function TenantDetails({ tenantId, onClose }) {
     try {
       const token = localStorage.getItem('admin_token');
       const response = await axios.get(
-        `http://localhost:8000/api/v1/admin/tenants/${tenantId}/session/${sessionId}/messages`,
+        `/api/v1/admin/tenants/${tenantId}/session/${sessionId}/messages`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setSessionMessages(response.data);

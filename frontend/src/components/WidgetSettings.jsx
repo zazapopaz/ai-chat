@@ -94,7 +94,7 @@ function WidgetSettings({ token, company, onUpdate }) {
       };
 
       const response = await axios.put(
-        `http://localhost:8000/api/v1/tenants/${company.id}`,
+        `/api/v1/tenants/${company.id}`,
         updateData,
         {
           headers: {
@@ -126,7 +126,7 @@ function WidgetSettings({ token, company, onUpdate }) {
   const getWidgetCode = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8000/api/v1/tenants/${company.id}/widget-code`,
+        `/api/v1/tenants/${company.id}/widget-code`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

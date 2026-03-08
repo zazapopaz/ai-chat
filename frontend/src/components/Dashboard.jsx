@@ -38,7 +38,7 @@ function Dashboard({ token, company }) {
 
     try {
       const statsResponse = await axios.get(
-        `http://localhost:8000/api/v1/dashboard/${company.id}/stats?period_days=${period}`,
+        `/api/v1/dashboard/${company.id}/stats?period_days=${period}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -48,7 +48,7 @@ function Dashboard({ token, company }) {
       setStats(statsResponse.data);
 
       const sessionsResponse = await axios.get(
-        `http://localhost:8000/api/v1/dashboard/${company.id}/all-sessions?include_anonymous=true`,
+        `/api/v1/dashboard/${company.id}/all-sessions?include_anonymous=true`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -61,7 +61,7 @@ function Dashboard({ token, company }) {
       setChartData(chartData);
 
       const recentResponse = await axios.get(
-        `http://localhost:8000/api/v1/dashboard/${company.id}/recent-sessions?hours=${period * 24}`,
+        `/api/v1/dashboard/${company.id}/recent-sessions?hours=${period * 24}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

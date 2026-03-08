@@ -40,7 +40,7 @@ function TenantDetailPage() {
     try {
       const token = localStorage.getItem('admin_token');
       const response = await axios.get(
-        `http://localhost:8000/api/v1/admin/tenants/${tenantId}/details`,
+        `/api/v1/admin/tenants/${tenantId}/details`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setTenant(response.data.tenant);
@@ -57,7 +57,7 @@ function TenantDetailPage() {
     try {
       const token = localStorage.getItem('admin_token');
       const response = await axios.get(
-        `http://localhost:8000/api/v1/admin/tenants/${tenantId}/all-sessions?skip=${(sessionsPage-1)*20}&limit=20`,
+        `/api/v1/admin/tenants/${tenantId}/all-sessions?skip=${(sessionsPage-1)*20}&limit=20`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setSessions(response.data.sessions);
@@ -71,7 +71,7 @@ function TenantDetailPage() {
     try {
       const token = localStorage.getItem('admin_token');
       const response = await axios.get(
-        `http://localhost:8000/api/v1/admin/tenants/${tenantId}/leads?skip=${(leadsPage-1)*20}&limit=20`,
+        `/api/v1/admin/tenants/${tenantId}/leads?skip=${(leadsPage-1)*20}&limit=20`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setLeads(response.data.leads);
@@ -85,7 +85,7 @@ function TenantDetailPage() {
     try {
       const token = localStorage.getItem('admin_token');
       const response = await axios.get(
-        `http://localhost:8000/api/v1/admin/tenants/${tenantId}/session/${sessionId}/messages`,
+        `/api/v1/admin/tenants/${tenantId}/session/${sessionId}/messages`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setSessionMessages(response.data);
@@ -99,7 +99,7 @@ function TenantDetailPage() {
     try {
       const token = localStorage.getItem('admin_token');
       await axios.post(
-        `http://localhost:8000/api/v1/admin/tenants/${tenantId}/toggle`,
+        `/api/v1/admin/tenants/${tenantId}/toggle`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -118,8 +118,8 @@ function TenantDetailPage() {
     try {
       const token = localStorage.getItem('admin_token');
       const endpoint = balanceAction === 'add'
-        ? `http://localhost:8000/api/v1/admin/tenants/${tenantId}/balance?amount=${balanceAmount}`
-        : `http://localhost:8000/api/v1/admin/tenants/${tenantId}/deduct-balance?amount=${balanceAmount}`;
+        ? `/api/v1/admin/tenants/${tenantId}/balance?amount=${balanceAmount}`
+        : `/api/v1/admin/tenants/${tenantId}/deduct-balance?amount=${balanceAmount}`;
 
       await axios.post(endpoint, {}, { headers: { Authorization: `Bearer ${token}` } });
       loadTenantDetails();

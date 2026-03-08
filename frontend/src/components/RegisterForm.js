@@ -58,7 +58,7 @@ function RegisterForm() {
     setIsLoading(true);
 
     try {
-      const response = await axios.post('http://localhost:8000/api/v1/auth/register', {
+      const response = await axios.post('/api/v1/auth/register', {
         email: formData.email,
         password: formData.password,
         full_name: formData.email.split('@')[0],
@@ -95,7 +95,7 @@ function RegisterForm() {
     setMessage('');
 
     try {
-      const response = await axios.post('http://localhost:8000/api/v1/auth/verify-email', {
+      const response = await axios.post('/api/v1/auth/verify-email', {
         email: formData.email,
         code: formData.code
       });
@@ -126,7 +126,7 @@ function RegisterForm() {
     setError('');
 
     try {
-      await axios.post('http://localhost:8000/api/v1/auth/resend-verification', {
+      await axios.post('/api/v1/auth/resend-verification', {
         email: formData.email
       });
       setMessage('Код подтверждения отправлен повторно');

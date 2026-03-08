@@ -33,7 +33,7 @@ function DialogList({ token, company }) {
 
     try {
       const response = await axios.get(
-        `http://localhost:8000/api/v1/dashboard/${company.id}/all-sessions?include_anonymous=true`,
+        `/api/v1/dashboard/${company.id}/all-sessions?include_anonymous=true`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -68,7 +68,7 @@ function DialogList({ token, company }) {
       // Fallback на старый endpoint
       try {
         const response = await axios.get(
-          `http://localhost:8000/api/v1/dashboard/${company.id}/leads`,
+          `/api/v1/dashboard/${company.id}/leads`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -98,7 +98,7 @@ function DialogList({ token, company }) {
   const loadSessionMessages = async (sessionId) => {
     try {
       const response = await axios.get(
-        `http://localhost:8000/api/v1/dashboard/${company.id}/sessions/${sessionId}/messages`,
+        `/api/v1/dashboard/${company.id}/sessions/${sessionId}/messages`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -137,7 +137,7 @@ function DialogList({ token, company }) {
       }
 
       const response = await axios.delete(
-        `http://localhost:8000/api/v1/dashboard/${tenantId}/sessions/${sessionToDelete}`,
+        `/api/v1/dashboard/${tenantId}/sessions/${sessionToDelete}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -168,7 +168,7 @@ function DialogList({ token, company }) {
       if (error.response?.status === 404) {
         try {
           const altResponse = await axios.delete(
-            `http://localhost:8000/api/v1/tenants/${company.id}/sessions/${sessionToDelete}`,
+            `/api/v1/tenants/${company.id}/sessions/${sessionToDelete}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,

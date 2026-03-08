@@ -111,7 +111,6 @@ async def widget_domain_middleware(request: Request, call_next):
     """
     if request.url.path.startswith(f"{settings.API_V1_STR}/widget/"):
         referer = request.headers.get("referer")
-        origin = request.headers.get("origin")
 
         if request.url.path.endswith("/widget.js"):
             if referer:
@@ -122,46 +121,15 @@ async def widget_domain_middleware(request: Request, call_next):
                         logger.warning(f"❌ Заблокирована загрузка виджета с домена {domain}")
                         return JSONResponse(
                             status_code=403,
-                            content={
-                                "error": "Domain not allowed",
-                                "message": "Виджет не может быть загружен с этого домена"
-                            }
+                            content={"error": "Domain not allowed"}
                         )
                 except Exception as e:
                     logger.error(f"Ошибка при парсинге referer: {e}")
-            elif not settings.DEBUG:
+            else:
                 logger.warning(f"❌ Запрос виджета без Referer: {request.client.host}")
                 return JSONResponse(
                     status_code=403,
-                    content={
-                        "error": "Invalid request",
-                        "message": "Referer header is required"
-                    }
-                )
-        else:
-            if origin:
-                try:
-                    parsed = urlparse(origin)
-                    domain = parsed.netloc
-                    if not is_widget_domain_allowed(domain):
-                        logger.warning(f"❌ Заблокирован API запрос виджета с домена {domain}")
-                        return JSONResponse(
-                            status_code=403,
-                            content={
-                                "error": "Domain not allowed",
-                                "message": "API запросы с этого домена запрещены"
-                            }
-                        )
-                except Exception as e:
-                    logger.error(f"Ошибка при парсинге origin: {e}")
-            elif not settings.DEBUG:
-                logger.warning(f"❌ API запрос виджета без Origin: {request.client.host}")
-                return JSONResponse(
-                    status_code=403,
-                    content={
-                        "error": "Invalid request",
-                        "message": "Origin header is required"
-                    }
+                    content={"error": "Referer header required"}
                 )
 
     response = await call_next(request)

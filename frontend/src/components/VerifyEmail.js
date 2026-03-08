@@ -15,17 +15,17 @@ function VerifyEmail() {
     setMessage('');
 
     try {
-      const response = await axios.post('http://localhost:8000/api/v1/auth/verify-email', {
+      const response = await axios.post('/api/v1/auth/verify-email', {
         email,
         code
       });
 
       if (response.data.verified) {
-        setMessage('✅ Email успешно подтвержден! Теперь вы можете войти.');
+        setMessage('Email успешно подтвержден! Теперь вы можете войти.');
         setIsVerified(true);
       }
     } catch (error) {
-      setMessage(error.response?.data?.detail || '❌ Ошибка подтверждения');
+      setMessage(error.response?.data?.detail || 'Ошибка подтверждения');
     } finally {
       setIsLoading(false);
     }
@@ -34,12 +34,12 @@ function VerifyEmail() {
   const handleResendCode = async () => {
     setIsLoading(true);
     try {
-      await axios.post('http://localhost:8000/api/v1/auth/resend-verification', {
+      await axios.post('/api/v1/auth/resend-verification', {
         email
       });
-      setMessage('📧 Код подтверждения отправлен повторно');
+      setMessage('Код подтверждения отправлен повторно');
     } catch (error) {
-      setMessage('❌ Ошибка при отправке кода');
+      setMessage('Ошибка при отправке кода');
     } finally {
       setIsLoading(false);
     }

@@ -16,7 +16,7 @@ function LeadsList({ token, company }) {
   const loadLeads = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8000/api/v1/dashboard/${company.id}/leads`,
+        `/api/v1/dashboard/${company.id}/leads`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

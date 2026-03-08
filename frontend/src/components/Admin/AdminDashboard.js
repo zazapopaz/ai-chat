@@ -20,7 +20,7 @@ function AdminDashboard({ admin, onLogout }) {
     try {
       const token = localStorage.getItem('admin_token');
       const response = await axios.get(
-        'http://localhost:8000/api/v1/admin/dashboard',
+        '/api/v1/admin/dashboard',
         { headers: { Authorization: `Bearer ${token}` } }
       );
       console.log('Dashboard data:', response.data);
@@ -38,7 +38,7 @@ function AdminDashboard({ admin, onLogout }) {
     try {
       const token = localStorage.getItem('admin_token');
       await axios.post(
-        `http://localhost:8000/api/v1/admin/tenants/${tenantId}/toggle`,
+        `/api/v1/admin/tenants/${tenantId}/toggle`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -55,7 +55,7 @@ function AdminDashboard({ admin, onLogout }) {
     try {
       const token = localStorage.getItem('admin_token');
       await axios.post(
-        `http://localhost:8000/api/v1/admin/tenants/${tenantId}/balance?amount=${amount}`,
+        `/api/v1/admin/tenants/${tenantId}/balance?amount=${amount}`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -72,7 +72,7 @@ function AdminDashboard({ admin, onLogout }) {
     try {
       const token = localStorage.getItem('admin_token');
       await axios.post(
-        `http://localhost:8000/api/v1/admin/tenants/${tenantId}/deduct-balance?amount=${amount}`,
+        `/api/v1/admin/tenants/${tenantId}/deduct-balance?amount=${amount}`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
