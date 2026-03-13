@@ -4,6 +4,8 @@ import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './App.css';
 
+axios.defaults.withCredentials = true;
+
 // Импортируем компоненты для пользователя
 import LoginForm from './components/LoginForm';
 import RegisterForm from './components/RegisterForm';
@@ -76,7 +78,6 @@ function MainAppContent({ token, setToken }) {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
     setToken(null);
     setCompanies([]);
     setSelectedCompany(null);
@@ -326,7 +327,6 @@ function AdminApp() {
       } catch (error) {
         console.error('Ошибка парсинга admin_data:', error);
         localStorage.removeItem('admin_data');
-        localStorage.removeItem('admin_token');
       }
     }
   }, []);
@@ -336,7 +336,6 @@ function AdminApp() {
   };
 
   const handleAdminLogout = () => {
-    localStorage.removeItem('admin_token');
     localStorage.removeItem('admin_data');
     setAdmin(null);
     navigate('/admin');
@@ -351,7 +350,7 @@ function AdminApp() {
 
 function App() {
   const navigate = useNavigate();
-  const [token, setToken] = useState(localStorage.getItem('token'));
+  const [token, setToken] = useState(null);
 
   const handleLogin = async (email, password) => {
     try {
@@ -370,7 +369,6 @@ function App() {
       if (data.requires_2fa) {
         alert('Требуется двухфакторная аутентификация');
       } else if (data.access_token) {
-        localStorage.setItem('token', data.access_token);
         setToken(data.access_token);
         navigate('/dashboard');
       } else {

@@ -1,5 +1,5 @@
 # app/api/deps.py
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException, status, Request
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.ext.asyncio import AsyncSession
 from jose import JWTError, jwt
@@ -10,10 +10,11 @@ from app.schemas.user import TokenData
 # Убираем прямой импорт crud_user
 # from app.crud import crud_user
 
-security = HTTPBearer()
+security = HTTPBearer(auto_error=False)
 
 
 async def get_current_user(
+        request: Request,
         credentials: HTTPAuthorizationCredentials = Depends(security),
         db: AsyncSession = Depends(get_db)
 ):
@@ -25,8 +26,17 @@ async def get_current_user(
     )
 
     try:
+        token = None
+        if credentials and credentials.credentials:
+            token = credentials.credentials
+        else:
+            token = request.cookies.get("access_token")
+
+        if not token:
+            raise credentials_exception
+
         payload = jwt.decode(
-            credentials.credentials,
+            token,
             settings.SECRET_KEY,
             algorithms=[settings.ALGORITHM]
         )

@@ -15,8 +15,6 @@ function AdminLogin({ onLogin }) {
     setError('');
 
     try {
-      console.log('Отправляем запрос с данными:', { email, password });
-
       const response = await axios.post(
         '/api/v1/admin/login',
         { email, password },
@@ -25,9 +23,6 @@ function AdminLogin({ onLogin }) {
           timeout: 10000
         }
       );
-
-      console.log('Ответ от сервера:', response.data);
-      console.log('Статус:', response.status);
 
       const { access_token, admin } = response.data;
 
@@ -44,16 +39,11 @@ function AdminLogin({ onLogin }) {
         return;
       }
 
-      console.log('Токен:', access_token);
-      console.log('Admin данные:', admin);
-
-      // Сохраняем в localStorage
-      localStorage.setItem('admin_token', access_token);
+      // Сохраняем только публичные данные профиля
       localStorage.setItem('admin_data', JSON.stringify(admin));
 
       // Вызываем колбэк
       if (onLogin) {
-        console.log('Вызываем onLogin с данными:', admin);
         onLogin(admin);
       }
     } catch (err) {

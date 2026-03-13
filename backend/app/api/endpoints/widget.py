@@ -9,6 +9,7 @@ from pathlib import Path
 import uuid
 import re
 import traceback
+from urllib.parse import urlparse
 
 from app.crud import crud_chat_session, crud_message, crud_tenant
 from app.database import get_db
@@ -37,9 +38,13 @@ def _cors_headers(request: Request) -> dict:
     Формирует CORS‑заголовки для ответов виджета.
     """
     origin = request.headers.get("origin")
+    parsed_origin = urlparse(origin).netloc if origin else ""
 
     # Для продакшена возвращаем конкретный Origin
-    if origin and origin in settings.WIDGET_ALLOWED_DOMAINS:
+    if origin and any(
+            parsed_origin == allowed or parsed_origin.endswith(f".{allowed}")
+            for allowed in settings.WIDGET_ALLOWED_DOMAINS
+    ):
         return {
             "Access-Control-Allow-Origin": origin,
             "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
@@ -671,7 +676,7 @@ async def options_start_chat_session(tenant_id: str, request: Request):
         content="",
         media_type="application/json",
         headers={
-            "Access-Control-Allow-Origin": request.headers.get("origin", "*"),
+            **_cors_headers(request),
             "Access-Control-Allow-Methods": "POST, OPTIONS",
             "Access-Control-Allow-Headers": "Content-Type",
             "Access-Control-Max-Age": "600",
@@ -686,7 +691,7 @@ async def options_widget_message(tenant_id: str, request: Request):
         content="",
         media_type="application/json",
         headers={
-            "Access-Control-Allow-Origin": request.headers.get("origin", "*"),
+            **_cors_headers(request),
             "Access-Control-Allow-Methods": "POST, OPTIONS",
             "Access-Control-Allow-Headers": "Content-Type",
             "Access-Control-Max-Age": "600",
@@ -701,7 +706,7 @@ async def options_save_contact(tenant_id: str, request: Request):
         content="",
         media_type="application/json",
         headers={
-            "Access-Control-Allow-Origin": request.headers.get("origin", "*"),
+            **_cors_headers(request),
             "Access-Control-Allow-Methods": "POST, OPTIONS",
             "Access-Control-Allow-Headers": "Content-Type",
             "Access-Control-Max-Age": "600",

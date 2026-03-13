@@ -1,5 +1,5 @@
 #backend/app/api/endpoints/admin.py
-from fastapi import APIRouter, Depends, HTTPException, status, Query, Request
+from fastapi import APIRouter, Depends, HTTPException, status, Query, Request, Response
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func, desc, or_
@@ -29,7 +29,7 @@ from app.schemas.admin import (
 )
 
 router = APIRouter(tags=["admin"])
-security = HTTPBearer()
+security = HTTPBearer(auto_error=False)
 
 
 def escape_like_search(search_term: str) -> str:
@@ -44,6 +44,7 @@ def escape_like_search(search_term: str) -> str:
 
 
 async def get_current_admin(
+        request: Request,
         credentials: HTTPAuthorizationCredentials = Depends(security),
         db: AsyncSession = Depends(get_db)
 ) -> Admin:
@@ -54,10 +55,14 @@ async def get_current_admin(
         headers={"WWW-Authenticate": "Bearer"},
     )
 
-    token = credentials.credentials
+    token = credentials.credentials if credentials else request.cookies.get("admin_access_token")
+    if not token:
+        raise credentials_exception
 
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+        if payload.get("type") != "access" or payload.get("is_admin") is not True:
+            raise credentials_exception
         admin_id: str = payload.get("sub")
         if admin_id is None:
             raise credentials_exception
@@ -100,6 +105,7 @@ async def log_admin_action(
 @router.post("/login", response_model=AdminLoginResponse)
 async def admin_login(
         login_data: AdminLogin,
+        response: Response,
         request: Request,
         db: AsyncSession = Depends(get_db)
 ):
@@ -160,6 +166,15 @@ async def admin_login(
     )
 
     access_token = create_access_token(data={"sub": admin.id, "is_admin": True})
+    response.set_cookie(
+        key="admin_access_token",
+        value=access_token,
+        httponly=True,
+        secure=(settings.ENVIRONMENT != "development"),
+        samesite="lax",
+        max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
+        path="/",
+    )
 
     return AdminLoginResponse(
         access_token=access_token,
@@ -172,6 +187,7 @@ async def admin_login(
 @router.post("/verify-2fa", response_model=AdminToken)
 async def verify_admin_2fa(
         verify_data: AdminTwoFactorVerifyRequest,
+        response: Response,
         request: Request,
         db: AsyncSession = Depends(get_db)
 ):
@@ -213,12 +229,27 @@ async def verify_admin_2fa(
     )
 
     access_token = create_access_token(data={"sub": admin.id, "is_admin": True})
+    response.set_cookie(
+        key="admin_access_token",
+        value=access_token,
+        httponly=True,
+        secure=(settings.ENVIRONMENT != "development"),
+        samesite="lax",
+        max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
+        path="/",
+    )
 
     return AdminToken(
         access_token=access_token,
         token_type="bearer",
         admin=AdminInDB.model_validate(admin)
     )
+
+
+@router.post("/logout")
+async def admin_logout(response: Response):
+    response.delete_cookie("admin_access_token", path="/")
+    return {"message": "Выход выполнен"}
 
 
 @router.post("/me/enable-2fa")

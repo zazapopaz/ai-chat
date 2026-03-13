@@ -1,5 +1,5 @@
 # app/api/endpoints/auth.py
-from fastapi import APIRouter, Depends, HTTPException, status, Body, Request
+from fastapi import APIRouter, Depends, HTTPException, status, Body, Request, Response
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
 from datetime import timedelta
@@ -34,6 +34,18 @@ router = APIRouter(tags=["authentication"])
 logger = logging.getLogger(__name__)
 
 
+def set_auth_cookie(response: Response, token: str):
+    response.set_cookie(
+        key="access_token",
+        value=token,
+        httponly=True,
+        secure=(settings.ENVIRONMENT != "development"),
+        samesite="lax",
+        max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
+        path="/",
+    )
+
+
 @router.post("/register", response_model=UserRegisterResponse, status_code=status.HTTP_201_CREATED)
 async def register(
         user_in: UserRegister,
@@ -50,10 +62,11 @@ async def register(
     # Проверяем, существует ли пользователь
     user = await crud_user.get_by_email(db, email=user_in.email)
     if user:
-        logger.warning(f"Попытка регистрации с существующим email: {user_in.email}")
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Пользователь с таким email уже существует"
+        logger.info(f"Повторная регистрация для существующего email: {user_in.email}")
+        return UserRegisterResponse(
+            message="Если email доступен для регистрации, на него будет отправлен код подтверждения.",
+            email=user_in.email,
+            requires_verification=True
         )
 
     # Создаем пользователя
@@ -86,7 +99,7 @@ async def register(
 
     # Явно создаем объект ответа
     response = UserRegisterResponse(
-        message="Регистрация успешна. На ваш email отправлен код подтверждения.",
+        message="Если email доступен для регистрации, на него будет отправлен код подтверждения.",
         email=user_in.email,
         requires_verification=True
     )
@@ -157,18 +170,12 @@ async def resend_verification(
     # Проверяем, существует ли пользователь
     user = await crud_user.get_by_email(db, email=data.email)
     if not user:
-        logger.warning(f"Попытка повторной отправки для несуществующего email: {data.email}")
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Пользователь не найден"
-        )
+        logger.info(f"Повторная отправка для несуществующего email: {data.email}")
+        return {"message": "Если учетная запись существует, код подтверждения отправлен"}
 
     if user.email_verified:
-        logger.warning(f"Попытка повторной отправки для уже подтвержденного email: {data.email}")
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Email уже подтвержден"
-        )
+        logger.info(f"Повторная отправка для подтвержденного email: {data.email}")
+        return {"message": "Если учетная запись существует, код подтверждения отправлен"}
 
     # Создаем новый код
     code = await verification_service.create_verification_code(
@@ -185,12 +192,13 @@ async def resend_verification(
 
     logger.info(f"Код подтверждения отправлен повторно для {data.email}")
 
-    return {"message": "Код подтверждения отправлен повторно"}
+    return {"message": "Если учетная запись существует, код подтверждения отправлен"}
 
 
 @router.post("/login", response_model=LoginResponse)
 async def login(
         form_data: OAuth2PasswordRequestForm = Depends(),
+        response: Response = None,
         request: Request = None,
         db: AsyncSession = Depends(get_db)
 ):
@@ -270,6 +278,8 @@ async def login(
         data={"sub": user.email, "user_id": user.id},
         expires_delta=access_token_expires
     )
+    if response:
+        set_auth_cookie(response, access_token)
 
     logger.info(f"Успешный вход: {email} с IP {client_ip}")
 
@@ -284,6 +294,7 @@ async def login(
 async def verify_2fa_login(
         verify_data: TwoFactorVerifyRequest,
         request: Request,
+        response: Response,
         db: AsyncSession = Depends(get_db)
 ):
     """Подтверждение 2FA кода при входе"""
@@ -320,6 +331,8 @@ async def verify_2fa_login(
         data={"sub": user.email, "user_id": user.id},
         expires_delta=access_token_expires
     )
+    if response:
+        set_auth_cookie(response, access_token)
 
     logger.info(f"2FA подтвержден для {email}")
 
@@ -327,6 +340,12 @@ async def verify_2fa_login(
         access_token=access_token,
         token_type="bearer"
     )
+
+
+@router.post("/logout")
+async def logout(response: Response):
+    response.delete_cookie("access_token", path="/")
+    return {"message": "Выход выполнен"}
 
 
 @router.post("/enable-2fa")
